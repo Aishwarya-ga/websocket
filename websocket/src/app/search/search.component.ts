@@ -10,7 +10,6 @@ import $ from 'jquery';
 })
 export class SearchComponent  {
 
-  private serverUrl = 'http://localhost:8080/socket'
   public title = 'WebSockets chat';
   private stompClient;
 
@@ -22,11 +21,12 @@ export class SearchComponent  {
 
   initializeWebSocketConnection(){
     
-    let ws = new SockJS(this.serverUrl);
-    this.stompClient = Stomp.over(ws);
-    let that = this;
+    const socket = new SockJS('http://127.0.0.1:8080/socket');
+    this.stompClient = Stomp.over(socket);
+ 
+    const _this = this;
     this.stompClient.connect({}, function(frame) {
-      that.stompClient.subscribe("/chat", (message) => {
+      _this.stompClient.subscribe("/chat", (message) => {
         if(message.body) {
           $(".chat").append("<div class='message'>"+message.body+"</div>")
           console.log(message.body);

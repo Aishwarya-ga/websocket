@@ -6,24 +6,32 @@ import org.springframework.web.socket.config.annotation.AbstractWebSocketMessage
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 
-@Configuration
-@EnableWebSocketMessageBroker
+@Configuration                // to indicate that it is a Spring configuration class
+@EnableWebSocketMessageBroker //enables WebSocket message handling, backed by a message broker.
 
-//class for settings we need to start with sockets.
+
+
 public class WebSocketConfiguration extends AbstractWebSocketMessageBrokerConfigurer{
 
-    //Registration of stompEndPoints
+    /*Registration of stompEndPoints
+    * method registers the "/socket" endpoint, enabling SockJS fallback
+    * options so that alternate transports may be used if WebSocket is not
+    * available. The SockJS client will attempt to connect to "/socket" and
+    * use the best transport available
+    */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/socket")
-                .setAllowedOrigins("*")
+                .setAllowedOrigins("http://127.0.0.1:8081")
                 .withSockJS();  //library for creating the socket
     }
 
-    //
+    /* method implements the default method in WebSocketMessageBrokerConfigurer
+     * to configure the message broker
+     */
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setApplicationDestinationPrefixes("/app")      //for project specific
-                .enableSimpleBroker("/chat"); //topic for subscription
+                .enableSimpleBroker("/chat");  //topic for subscription,to enable a simple memory-based message broker to carry the greeting messages back to the client on destinations prefixed with "/chat".
     }
 }
